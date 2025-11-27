@@ -118,7 +118,10 @@ struct IPInputCard: View {
                     )
                     .onChange(of: viewModel.targetAddress) { _, newValue in
                         if !newValue.isEmpty {
-                            isValidIP = viewModel.validateIPAddress(newValue) || !newValue.contains(" ")
+                            // Valid if it's an IP address OR looks like a hostname (contains dot, no spaces)
+                            let isIPAddress = viewModel.validateIPAddress(newValue)
+                            let looksLikeHostname = newValue.contains(".") && !newValue.contains(" ")
+                            isValidIP = isIPAddress || looksLikeHostname
                         } else {
                             isValidIP = true
                         }

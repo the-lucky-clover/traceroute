@@ -66,8 +66,9 @@ public enum IPAddress: Hashable, Codable, CustomStringConvertible {
             let parts = string.split(separator: "::", omittingEmptySubsequences: false)
             guard parts.count <= 2 else { return false }
             
-            let leftParts = parts[0].split(separator: ":")
-            let rightParts = parts.count > 1 ? parts[1].split(separator: ":") : []
+            // Handle cases like "::1" where leftParts would be empty
+            let leftParts = parts[0].isEmpty ? [] : parts[0].split(separator: ":")
+            let rightParts = parts.count > 1 && !parts[1].isEmpty ? parts[1].split(separator: ":") : []
             let missingCount = 8 - (leftParts.count + rightParts.count)
             
             guard missingCount >= 0 else { return false }
@@ -84,6 +85,7 @@ public enum IPAddress: Hashable, Codable, CustomStringConvertible {
         
         for part in parts {
             guard part.count <= 4,
+                  part.count > 0,
                   Int(part, radix: 16) != nil else {
                 return false
             }

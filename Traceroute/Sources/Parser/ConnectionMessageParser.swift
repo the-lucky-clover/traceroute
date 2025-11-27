@@ -143,8 +143,8 @@ public struct ConnectionMessageParser {
     private func extractIPAddress(from message: String) -> String? {
         // IPv4 pattern
         let ipv4Pattern = #"\b(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})\b"#
-        // IPv6 pattern (simplified)
-        let ipv6Pattern = #"\b([0-9a-fA-F:]+:[0-9a-fA-F:]+)\b"#
+        // IPv6 pattern - more restrictive to match valid hex groups
+        let ipv6Pattern = #"\b([0-9a-fA-F]{1,4}(?::[0-9a-fA-F]{0,4}){2,7})\b"#
         
         // Try IPv6 first (longer pattern)
         if let regex = try? NSRegularExpression(pattern: ipv6Pattern, options: []) {
@@ -152,6 +152,7 @@ public struct ConnectionMessageParser {
             if let match = regex.firstMatch(in: message, options: [], range: range),
                let matchRange = Range(match.range(at: 1), in: message) {
                 let candidate = String(message[matchRange])
+                // Validate using our robust IPAddress parser
                 if IPAddress(string: candidate) != nil {
                     return candidate
                 }
@@ -163,7 +164,11 @@ public struct ConnectionMessageParser {
             let range = NSRange(message.startIndex..., in: message)
             if let match = regex.firstMatch(in: message, options: [], range: range),
                let matchRange = Range(match.range(at: 1), in: message) {
-                return String(message[matchRange])
+                let candidate = String(message[matchRange])
+                // Validate using our IPAddress parser
+                if IPAddress(string: candidate) != nil {
+                    return candidate
+                }
             }
         }
         

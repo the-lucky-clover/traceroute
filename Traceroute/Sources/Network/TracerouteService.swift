@@ -141,7 +141,9 @@ public actor TracerouteService {
             }
             
             // Must be hostname
-            if hostname == nil && !comp.contains(".") || (comp.contains(".") && address == nil) {
+            if hostname == nil && !comp.contains(".") {
+                hostname = comp
+            } else if comp.contains(".") && address == nil {
                 if IPAddress(string: comp) != nil {
                     address = comp
                 } else {
