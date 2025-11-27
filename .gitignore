@@ -1,0 +1,29 @@
+# Swift Package Manager
+.build/
+.swiftpm/
+Package.resolved
+
+# Xcode
+*.xcodeproj/
+*.xcworkspace/
+xcuserdata/
+DerivedData/
+
+# Build artifacts
+*.app
+*.ipa
+*.dSYM
+*.dSYM.zip
+
+# OS-specific
+.DS_Store
+.Trashes
+Thumbs.db
+
+# IDE
+*.idea/
+*.vscode/
+
+# Temporary files
+*.tmp
+*.temp
